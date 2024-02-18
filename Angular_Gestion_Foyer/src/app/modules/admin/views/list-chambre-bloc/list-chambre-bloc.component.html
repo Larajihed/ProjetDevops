@@ -1,0 +1,401 @@
+<div class="page-content-wrapper border">
+    <!-- Title -->
+    <div class="row mb-3">
+        <div class="col-12 d-sm-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-2 mb-sm-0">Bloc & Chambre</h1>
+        </div>
+    </div>
+
+    <div class="card bg-transparent border">
+        <div class="card-body">
+<!-- Book detail START -->
+<div class="col-12">
+    <!-- Tabs START -->
+    <ul class="nav nav-pills nav-pills-bg-soft px-3" id="book-pills-tab" role="tablist">
+        <!-- Tab item -->
+        <li class="nav-item me-2 me-sm-4" role="presentation">
+            <button class="nav-link mb-0 active" id="book-pills-tab-1" data-bs-toggle="pill" data-bs-target="#book-pills-1" type="button" role="tab" aria-controls="book-pills-1" aria-selected="true">Blocs</button>
+        </li>
+        <!-- Tab item -->
+        <li class="nav-item me-2 me-sm-4" role="presentation">
+            <button class="nav-link mb-0" id="book-pills-tab-2" data-bs-toggle="pill" data-bs-target="#book-pills-2" type="button" role="tab" aria-controls="book-pills-2" aria-selected="false">Chambres</button>
+        </li>
+        <!-- Tab item -->
+    </ul>
+    <!-- Tabs END -->
+
+    <!-- Tab contents START -->
+    <div class="tab-content pt-4 px-3" id="book-pills-tabContent">
+        <!-- Content START -->
+        <div class="tab-pane fade show active" id="book-pills-1" role="tabpanel" aria-labelledby="book-pills-tab-1">
+            <div class="mt-2 mb-4">
+                <h5 class="mb-4">Ajouter bloc</h5>
+                <form class="row g-3" [formGroup]="BlocForm">
+                    <!-- Name -->
+                    <div class="col-md-12">
+                        <label class="form-label">Nom de bloc <span class="text-danger">*</span></label>
+                        <input type="text" class="form-control" formControlName="nomBloc" placeholder="Nom du bloc">
+                    </div>
+                    <!-- Email -->
+                    <div class="col-md-12">
+                        <label class="form-label">Capacité de bloc <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" formControlName="capaciteBloc" placeholder="Capacité du bloc">
+                    </div>
+                    <!-- Button -->
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary mb-0" (click)="ajouerBloc()">Ajouter</button>
+                    </div>
+                </form>
+            </div>
+        
+        
+            <div class="card bg-transparent border mt-2">
+        
+                <!-- Card header START -->
+                <div class="card-header bg-light border-bottom">
+                    <div class="row mb-3">
+                        <div class="col-12 d-sm-flex justify-content-between align-items-center">
+                            <h1 class="h3 mb-2 mb-sm-0">Liste des blocs</h1>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card header END -->
+        
+                <!-- Card body START -->
+                <div class="card-body">
+        
+                    <!-- Table START -->
+                    <div class="table-responsive border-0 rounded-3">
+                        <table class="table table-dark-gray align-middle p-4 mb-0 table-hover">
+                            <!-- Table head -->
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="border-0 rounded-start">Nom de Bloc</th>
+                                    <th scope="col" class="border-0">Capacité de Bloc</th>
+                                    <th scope="col" class="border-0">Foyer associé</th>
+                                    <th scope="col" class="border-0 rounded-end">Action</th>
+                                </tr>
+                            </thead>
+        
+                            <!-- Table body START -->
+                            <tbody *ngFor="let bloc of listBlocs">
+        
+                                <!-- Table row -->
+                                <tr>
+        
+                                    <!-- Table data -->
+                                    <td>
+                                        <h6 class="table-responsive-title mb-0">{{bloc.nomBloc}}</h6>
+                                    </td>
+        
+                                    <!-- Table data -->
+                                    <td>
+                                        <h6 class="table-responsive-title mb-0">{{bloc.capaciteBloc}}</h6>
+                                    </td>
+        
+                                    <!-- Table data -->
+                                    
+                                    <td>
+                                        <!-- Condition pour vérifier si le foyer est associé ou non -->
+                                        <span
+                                            *ngIf="bloc.foyer && bloc.foyer.nomFoyer !== 'Non associé'; else notAssociated">
+                                            <h6 class="table-responsive-title mb-0">{{bloc.foyer.nomFoyer}}</h6>
+                                        </span>
+                                        <!-- Template pour 'Non associé' -->
+                                        <ng-template #notAssociated>
+                                            <h6 class="badge bg-danger bg-opacity-10 text-danger">Non associé</h6>
+                                        </ng-template>
+                                    </td>
+
+                                    <td>
+                                        <a (click)="openEditModalBloc(bloc)" data-bs-toggle="modal"
+                                            data-bs-target="#updateNewcard"
+                                            class="btn btn-success-soft btn-round me-1 mb-1 mb-md-0">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <a (click)="deleteBloc(bloc.idBloc)"
+                                            class="btn btn-danger-soft btn-round me-1 mb-1 mb-md-0" data-bs-toggle="tooltip"
+                                            data-bs-placement="top" title="" data-bs-original-title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+
+                                        <!-- If universite.foyer.nomFoyer has a value, display the "Désaffecter" button -->
+                                        <span *ngIf="bloc.foyer && bloc.foyer.nomFoyer; else affecterFoyer">
+                                        </span>
+
+                                        <!-- ng-template with the #affecterFoyer label for the "else" clause -->
+                                        <ng-template #affecterFoyer>
+                                            <a (click)="openAffectModalBloc(bloc.idBloc)" class="btn btn-sm btn-info-soft mb-0 me-1" data-bs-toggle="modal" data-bs-target="#getNewcard">Affecter Foyer</a>
+                                        </ng-template>
+
+                                        <a (click)="openAffectModalBloc(bloc.idBloc)" class="btn btn-sm btn-info-soft mb-0 me-1" data-bs-toggle="modal" data-bs-target="#getNewcardC">Affecter Chambres</a>
+                                    </td>
+                                </tr>
+        
+                            </tbody>
+                            <!-- Table body END -->
+                        </table>
+                    </div>
+                    <!-- Table END -->
+        
+                </div>
+                <!-- All review table END -->
+        
+            </div>
+        </div>
+        <!-- Content END -->
+
+        <!-- Content START -->
+        <div class="tab-pane fade" id="book-pills-2" role="tabpanel" aria-labelledby="book-pills-tab-2">
+            <!-- Leave Review START -->
+            <div class="mt-2 mb-4">
+                <h5 class="mb-4">Ajouter chambre</h5>
+                <form class="row g-3" [formGroup]="ChambreForm">
+                    <div class="col-md-12">
+                        <label class="form-label">Numéro de chambre <span class="text-danger">*</span></label>
+                        <input type="number" class="form-control" formControlName="numeroChambre" placeholder="Numéro de chambre">
+                    </div>
+                    <!-- Email -->
+                    <div class="col-12">
+						<label class="form-label">Type de chambre <span class="text-danger">*</span></label>
+						<select class="border-0 bg-light rounded-end ps-1 form-select border-0 z-index-9" formControlName="typeC" (change)="onTypeChange($event)">
+                            <option value="" disabled>Selectionner un type</option>
+                            <option *ngFor="let type of typesChambre" [value]="type">{{ type }}</option>
+                        </select>
+					</div>
+                    <!-- Button -->
+                    <div class="col-12">
+                        <button type="submit" class="btn btn-primary mb-0" (click)="ajouerChambre()">Ajouter</button>
+                    </div>
+                </form>
+            </div>
+            <!-- Leave Review END -->
+
+            <div class="card bg-transparent border mt-2">
+        
+                <!-- Card header START -->
+                <div class="card-header bg-light border-bottom">
+                    <div class="row mb-3">
+                        <div class="col-12 d-sm-flex justify-content-between align-items-center">
+                            <h1 class="h3 mb-2 mb-sm-0">Liste des chambres</h1>
+                        </div>
+                    </div>
+                </div>
+                <!-- Card header END -->
+        
+                <!-- Card body START -->
+                <div class="card-body">
+        
+                    <!-- Table START -->
+                    <div class="table-responsive border-0 rounded-3">
+                        <table class="table table-dark-gray align-middle p-4 mb-0 table-hover">
+                            <!-- Table head -->
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="border-0 rounded-start">Numéro de Chambre</th>
+                                    <th scope="col" class="border-0">Type de Chambre</th>
+                                    <th scope="col" class="border-0">Bloc associé</th>
+                                    <th scope="col" class="border-0">Foyer associé</th>
+                                    <th scope="col" class="border-0 rounded-end">Action</th>
+                                </tr>
+                            </thead>
+        
+                            <!-- Table body START -->
+                            <tbody *ngFor="let chambre of listChambres">
+        
+                                <!-- Table row -->
+                                <tr>
+        
+                                    <!-- Table data -->
+                                    <td>
+                                        <h6 class="table-responsive-title mb-0">{{chambre.numeroChambre}}</h6>
+                                    </td>
+        
+                                    <!-- Table data -->
+                                    <td>
+                                        <h6 class="table-responsive-title mb-0">{{chambre.typeC}}</h6>
+                                    </td>
+        
+                                    <!-- Table data -->
+                                    
+                                    <td>
+                                        <!-- Condition pour vérifier si le foyer est associé ou non -->
+                                        <span
+                                            *ngIf="chambre.bloc && chambre.bloc.nomBloc !== 'Non associé'; else notAssociated">
+                                            <h6 class="table-responsive-title mb-0">{{chambre.bloc.nomBloc}}</h6>
+                                        </span>
+                                        <!-- Template pour 'Non associé' -->
+                                        <ng-template #notAssociated>
+                                            <h6 class="badge bg-danger bg-opacity-10 text-danger">Non associé</h6>
+                                        </ng-template>
+                                    </td>
+
+                                    
+                                    <td>
+                                        <!-- Vérifiez si la chambre a un bloc associé et ce bloc a un foyer -->
+                                        <span *ngIf="chambre.bloc && chambre.bloc.foyer; else notAssociatedF">
+                                            <h6 class="table-responsive-title mb-0">{{ chambre.bloc.foyer.nomFoyer }}</h6>
+                                        </span>
+                                        <!-- Template pour 'Non associé' -->
+                                        <ng-template #notAssociatedF>
+                                            <h6 class="badge bg-danger bg-opacity-10 text-danger">Non associé</h6>
+                                        </ng-template>
+                                    </td>
+
+                                    <td>
+                                        <a (click)="openEditModalChambre(chambre)" data-bs-toggle="modal"
+                                            data-bs-target="#updateNewcardC"
+                                            class="btn btn-success-soft btn-round me-1 mb-1 mb-md-0">
+                                            <i class="bi bi-pencil-square"></i>
+                                        </a>
+                                        <a (click)="deleteChambre(chambre.idChambre)"
+                                            class="btn btn-danger-soft btn-round me-1 mb-1 mb-md-0" data-bs-toggle="tooltip"
+                                            data-bs-placement="top" title="" data-bs-original-title="Delete">
+                                            <i class="bi bi-trash"></i>
+                                        </a>
+                                    </td>
+                                </tr>
+        
+                            </tbody>
+                            <!-- Table body END -->
+                        </table>
+                    </div>
+                    <!-- Table END -->
+        
+                </div>
+                <!-- All review table END -->
+        
+            </div>
+        </div>
+        <!-- Content END -->
+
+    </div>
+    <!-- Tab contents END -->
+</div>
+<!-- Book detail END -->
+        </div>
+    </div>
+</div>
+
+
+
+<!-- Popup modal for add card -->
+<div class="modal fade" id="updateNewcard" tabindex="-1" aria-labelledby="addNewcardLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark">
+                <h5 class="modal-title text-white" id="addNewcardLabel">Modifier bloc</h5>
+                <button type="button" class="btn btn-sm btn-light mb-0" data-bs-dismiss="modal"
+                    aria-label="Close"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="modal-body">
+                <form class="row text-start g-3" [formGroup]="BlocForm">
+
+                    <div class="col-12">
+                        <label class="form-label">Nom de Bloc</label>
+                        <input type="text" class="form-control" formControlName="nomBloc">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Capacité de Bloc</label>
+                        <input type="text" class="form-control" formControlName="capaciteBloc">
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" [disabled]="!BlocForm.valid" (click)="updateBloc()" data-bs-dismiss="modal" aria-label="Close"
+                    class="btn btn-success my-0">Modifier</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+
+<!-- Popup modal for add card -->
+<div class="modal fade" id="getNewcard" tabindex="-1" aria-labelledby="addNewcardLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark">
+                <h5 class="modal-title text-white" id="addNewcardLabel">Affecter bloc à un foyer</h5>
+                <button type="button" class="btn btn-sm btn-light mb-0" data-bs-dismiss="modal"
+                    aria-label="Close"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="modal-body">
+                <form class="row text-start g-3">
+                    <!-- Card number -->
+                    <div class="col-12">
+                        <label class="form-label">Foyer <span class="text-danger">*</span></label>
+                        <select class="border-0 bg-light rounded-end ps-1 form-select border-0 z-index-9" [(ngModel)]="selectedFoyerId" name="selectedFoyerId">
+                            <option value="" disabled>Selectionner un foyer</option>
+                            <option *ngFor="let foyer of listFoyer" [value]="foyer.idFoyer">{{ foyer.nomFoyer }}</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" data-bs-dismiss="modal" aria-label="Close"
+                    class="btn btn-success my-0" [disabled]="selectedFoyerId === null || selectedBlocId === null" (click)="affecterBlocAFoyer()">Affecter</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="updateNewcardC" tabindex="-1" aria-labelledby="addNewcardLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark">
+                <h5 class="modal-title text-white" id="addNewcardLabel">Modifier chambre</h5>
+                <button type="button" class="btn btn-sm btn-light mb-0" data-bs-dismiss="modal"
+                    aria-label="Close"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="modal-body">
+                <form class="row text-start g-3" [formGroup]="ChambreForm">
+
+                    <div class="col-12">
+                        <label class="form-label">Numéro de chambre</label>
+                        <input type="number" class="form-control" formControlName="numeroChambre">
+                    </div>
+                    <div class="col-12">
+                        <label class="form-label">Type de chambre</label>
+                        <select class="border-0 bg-light rounded-end ps-1 form-select border-0 z-index-9" formControlName="typeC" (change)="onTypeChange($event)">
+                            <option value="" disabled>Selectionner un type</option>
+                            <option *ngFor="let type of typesChambre" [value]="type">{{ type }}</option>
+                        </select>
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" [disabled]="!ChambreForm.valid" (click)="updateChambre()" data-bs-dismiss="modal" aria-label="Close"
+                    class="btn btn-success my-0">Modifier</button>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div class="modal fade" id="getNewcardC" tabindex="-1" aria-labelledby="addNewcardLabel" aria-hidden="true">
+    <div class="modal-dialog">
+        <div class="modal-content">
+            <div class="modal-header bg-dark">
+                <h5 class="modal-title text-white" id="addNewcardLabel">Affecter chambres à un bloc</h5>
+                <button type="button" class="btn btn-sm btn-light mb-0" data-bs-dismiss="modal"
+                    aria-label="Close"><i class="bi bi-x-lg"></i></button>
+            </div>
+            <div class="modal-body">
+                <form class="row text-start g-3">
+                    <!-- Card number -->
+                    <div class="col-12">
+                        <label class="form-label">Chambres <span class="text-danger">*</span></label>
+                        <select multiple class="border-0 bg-light rounded-end ps-1 form-select border-0 z-index-9" [(ngModel)]="selectedChambresIds" name="selectedChambresIds">
+                            <option value="" disabled>Sélectionnez une ou plusieurs chambres</option>
+                            <option *ngFor="let chambre of listChambresB" [value]="chambre.idChambre">{{ chambre.numeroChambre }}</option>
+                        </select>
+                        
+                    </div>
+                </form>
+            </div>
+            <div class="modal-footer">
+                <button type="submit" data-bs-dismiss="modal" aria-label="Close"
+                    class="btn btn-success my-0" [disabled]="selectedBlocId === null || selectedChambresIds === null" (click)="affecterChambresABloc()">Affecter</button>
+            </div>
+        </div>
+    </div>
+</div>

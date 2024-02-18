@@ -1,0 +1,262 @@
+<div class="page-content-wrapper border">
+
+    <!-- Title -->
+    <div class="row mb-3">
+        <div class="col-12 d-sm-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-2 mb-sm-0">Liste des foyers</h1>
+            <a class="btn btn-sm btn-primary-soft mb-0" data-bs-toggle="modal" data-bs-target="#addNewcard">Ajouter
+                foyer</a>
+        </div>
+    </div>
+
+
+    <div class="card bg-transparent border">
+
+        <!-- Card header START -->
+        <div class="card-header bg-light border-bottom">
+            <!-- Search and select START -->
+            <div class="row g-3 align-items-center justify-content-between">
+
+                <!-- Search bar -->
+                <div class="col-md-8">
+                    <form class="rounded position-relative">
+                        <input class="form-control bg-transparent" [(ngModel)]="rechercheFoyer"
+                            name="rechercheFoyer" type="search" placeholder="Entrez le nom de l'université"
+                            aria-label="Search">
+                        <button
+                            class="bg-transparent p-2 position-absolute top-50 end-0 translate-middle-y border-0 text-primary-hover text-reset"
+                            type="submit">
+                            <i class="fas fa-search fs-6 "></i>
+                        </button>
+                    </form>
+                </div>
+
+            </div>
+            <!-- Search and select END -->
+        </div>
+        <!-- Card header END -->
+        <div *ngIf="showMe">
+            <app-details-foyer [inputData]="id_foyer"></app-details-foyer>
+        </div>
+        <!-- Card body START -->
+        <div class="card-body">
+            <!-- Table START -->
+                <div class="table-responsive border-0 rounded-3"  *ngIf="!showMe">
+                    <table class="table table-dark-gray align-middle p-4 mb-0 table-hover">
+                        <!-- Table head -->
+                        <thead>
+                            <tr>
+                                <th scope="col" class="border-0 rounded-start">Nom de foyer</th>
+                                <th scope="col" class="border-0">Capacité de foyer</th>
+                                <th scope="col" class="border-0">Université associée</th>
+                                <th scope="col" class="border-0 rounded-end">Action</th>
+                            </tr>
+                        </thead>
+    
+                        <!-- Table body START -->
+                        <tbody *ngFor="let foyer of listFoyer | rechercheFoyer: rechercheFoyer">
+    
+                            <!-- Table row -->
+                            <tr>
+    
+                                <!-- Table data -->
+                                <td>
+                                    <h6 class="table-responsive-title mb-0">{{foyer.nomFoyer}}</h6>
+                                </td>
+    
+                                <td>
+                                    <h6 class="table-responsive-title mb-0">{{foyer.capaciteFoyer}}</h6>
+                                </td>
+    
+                                <!-- Table data -->
+                                <td>
+                                    <!-- Condition pour vérifier si le foyer est associé ou non -->
+                                    <span
+                                        *ngIf="foyer.universite && foyer.universite.nomUniversite !== 'Non associé'; else notAssociated">
+                                        <h6 class="table-responsive-title mb-0">{{foyer.universite.nomUniversite}}</h6>
+                                    </span>
+                                    <!-- Template pour 'Non associé' -->
+                                    <ng-template #notAssociated>
+                                        <h6 class="badge bg-danger bg-opacity-10 text-danger">Non associé</h6>
+                                    </ng-template>
+                                </td>
+    
+    
+                                <!-- Table data -->
+                                <td>
+                                    <a (click)="infoFoyer(foyer.idFoyer)"
+                                        class="btn btn-info-soft btn-round me-1 mb-1 mb-md-0" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="" data-bs-original-title="Info">
+                                        <i class="fas fa-info-circle"></i>
+                                    </a>
+                                    <a (click)="openEditModal(foyer)" data-bs-toggle="modal"
+                                        data-bs-target="#updateNewcard"
+                                        class="btn btn-success-soft btn-round me-1 mb-1 mb-md-0">
+                                        <i class="bi bi-pencil-square"></i>
+                                    </a>
+                                    <a (click)="deleteFoyer(foyer.idFoyer)"
+                                        class="btn btn-danger-soft btn-round me-1 mb-1 mb-md-0" data-bs-toggle="tooltip"
+                                        data-bs-placement="top" title="" data-bs-original-title="Delete">
+                                        <i class="bi bi-trash"></i>
+                                    </a>
+                                </td>
+                            </tr>
+    
+                        </tbody>
+                        <!-- Table body END -->
+                    </table>
+                </div>
+          
+            <!-- Table END -->
+
+        </div>
+        <!-- All review table END -->
+
+    </div>
+
+
+
+    <!-- Popup modal for add card -->
+    <div class="modal fade" id="addNewcard" tabindex="-1" aria-labelledby="addNewcardLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-dark">
+                    <h5 class="modal-title text-white" id="addNewcardLabel">Ajouter foyer</h5>
+                    <button type="button" class="btn btn-sm btn-light mb-0" data-bs-dismiss="modal"
+                        aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="modal-body">
+                    <div class="col-12">
+                        <div class="accordion accordion-circle" id="accordioncircle">
+                            <!-- Credit or debit card START -->
+                            <div class="accordion-item mb-3">
+                                <h6 class="accordion-header" id="heading-1">
+                                    <button class="accordion-button rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-1" 
+                                            (click)="panneauActif = 'heading-1'" aria-expanded="true" aria-controls="collapse-1">
+                                        Ajoutez un foyer
+                                    </button>
+                                </h6>
+                                <div id="collapse-1" class="accordion-collapse collapse show" aria-labelledby="heading-1" data-bs-parent="#accordioncircle">
+                                    <!-- Accordion body -->
+                                    <div class="accordion-body">
+                                        <!-- Form START -->
+                                        <form class="row text-start g-3" [formGroup]="FoyerForm">
+
+                                            <div class="col-12">
+                                                <label class="form-label">Nom de foyer</label>
+                                                <input type="text" class="form-control" formControlName="nomFoyer"
+                                                    placeholder="Entrez le nom de foyer">
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="form-label">Capacité de foyer</label>
+                                                <input type="text" class="form-control" formControlName="capaciteFoyer"
+                                                    placeholder="Entrez le capacité de foyer">
+                                            </div>
+                                        </form>
+                                        <!-- Form END -->
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Credit or debit card END -->
+
+                            <!-- Net banking START -->
+                            <div class="accordion-item mb-3">
+                                <h6 class="accordion-header" id="heading-2">
+                                    <button class="accordion-button collapsed rounded" type="button" data-bs-toggle="collapse" data-bs-target="#collapse-2" 
+                                            (click)="panneauActif = 'heading-2'" aria-expanded="false" aria-controls="collapse-2">
+                                        Ajoutez un foyer et ses blocs correspondants, puis associez-le à une université
+                                    </button>
+                                </h6>
+                                <div id="collapse-2" class="accordion-collapse collapse" aria-labelledby="heading-2" data-bs-parent="#accordioncircle">
+                                    <!-- Accordion body -->
+                                    <div class="accordion-body">
+                                        <!-- Form START -->
+                                        <form class="row text-start g-3" [formGroup]="FoyerBUForm">
+                                            <div class="col-12">
+                                                <label class="form-label">Université <span class="text-danger">*</span></label>
+                                                <select class="form-control" formControlName="universiteId">
+                                                    <option value="" disabled>Selectionner une université</option>
+                                                    <option *ngFor="let universite of listUniversitesWithoutFoyer" [ngValue]="universite.idUniversite">
+                                                      {{ universite.nomUniversite }}
+                                                    </option>
+                                                </select>                                                  
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="form-label">Nom de foyer</label>
+                                                <input type="text" class="form-control" formControlName="nomFoyer"
+                                                    placeholder="Entrez le nom de foyer">
+                                            </div>
+                                            <div class="col-12">
+                                                <label class="form-label">Capacité de foyer</label>
+                                                <input type="text" class="form-control" formControlName="capaciteFoyer"
+                                                    placeholder="Entrez le capacité de foyer">
+                                            </div>
+                                            <div class="form-control" formArrayName="blocs">
+                                                <label class="form-label">Blocs</label>
+                                                <div *ngFor="let bloc of blocs.controls; let i = index" [formGroupName]="i">
+                                                    <!-- Champs pour chaque bloc -->
+                                                    <div class="col-12">
+                                                        <label class="form-label">Nom du bloc</label>
+                                                        <input class="form-control mb-2" formControlName="nomBloc" type="text" placeholder="Nom du bloc">
+                                                    </div>
+                                                    <div class="col-12">
+                                                        <label class="form-label">Capacité du bloc</label>
+                                                        <input class="form-control mb-2" formControlName="capaciteBloc" type="text" placeholder="Capacité du bloc">
+                                                    </div>
+                                                
+                                                    <!-- Bouton pour supprimer le bloc -->
+                                                    <button type="button" class="btn btn-sm btn-light mb-2" (click)="supprimerBloc(i)"><i class="fas fa-minus me-1"></i>Supprimer le bloc</button>
+                                                </div>
+                                            </div>
+                                            <button class="btn btn-sm btn-light mb-0" (click)="ajouterBloc()"><i class="fas fa-plus me-1"></i>Ajouter un bloc</button>
+                                            
+                                        </form>
+                                        <!-- Form END -->
+                                    </div>
+                                </div>
+                            </div>
+                            <!-- Net banking END -->
+                        </div>
+                    </div>
+                </div>
+                <div class="modal-footer">
+                    <button *ngIf="panneauActif === 'heading-1'" type="button" [disabled]="!FoyerForm.valid" (click)="ajouerFoyer()"
+                    data-bs-dismiss="modal" aria-label="Close" class="btn btn-success my-0">Ajouter</button>
+                    <button *ngIf="panneauActif === 'heading-2'" type="button" (click)="ajouerFoyerBU()"
+                    data-bs-dismiss="modal" aria-label="Close" class="btn btn-success my-0">Ajouter</button>
+                </div>                
+            </div>
+        </div>
+    </div>
+
+
+
+    <!-- Popup modal for add card -->
+    <div class="modal fade" id="updateNewcard" tabindex="-1" aria-labelledby="addNewcardLabel" aria-hidden="true">
+        <div class="modal-dialog">
+            <div class="modal-content">
+                <div class="modal-header bg-dark">
+                    <h5 class="modal-title text-white" id="addNewcardLabel">Modifier foyer</h5>
+                    <button type="button" class="btn btn-sm btn-light mb-0" data-bs-dismiss="modal"
+                        aria-label="Close"><i class="bi bi-x-lg"></i></button>
+                </div>
+                <div class="modal-body">
+                    <form class="row text-start g-3" [formGroup]="FoyerForm">
+
+                        <div class="col-12">
+                            <label class="form-label">Nom de foyer</label>
+                            <input type="text" class="form-control" formControlName="nomFoyer">
+                        </div>
+                        <div class="col-12">
+                            <label class="form-label">Capacité de foyer</label>
+                            <input type="text" class="form-control" formControlName="capaciteFoyer">
+                        </div>
+                    </form>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" [disabled]="!FoyerForm.valid" (click)="updateFoyer()" data-bs-dismiss="modal" aria-label="Close"
+                        class="btn btn-success my-0">Modifier</button>
+                </div>
+            </div>
+        </div>
+    </div>

@@ -1,0 +1,73 @@
+<div class="page-content-wrapper border">
+    <!-- Title -->
+    <div class="row mb-3">
+        <div class="col-12 d-sm-flex justify-content-between align-items-center">
+            <h1 class="h3 mb-2 mb-sm-0">Liste des réservations</h1>
+        </div>
+    </div>
+
+    <div class="card bg-transparent border">
+        <div class="card-body">
+            <div class="table-responsive border-0 rounded-3">
+                <!-- Vérifier si le tableau etudiantReservations n'est pas vide -->
+                <div *ngIf="etudiantReservations.length > 0; else noReservation">
+                    <table class="table table-dark-gray align-middle p-4 mb-0 table-hover">
+                        <!-- Table head -->
+                        <thead>
+                            <tr>
+                                <th scope="col" class="border-0 rounded-start">Etudiant</th>
+                                <th scope="col" class="border-0">Numéro de réservation</th>
+                                <th scope="col" class="border-0">Début de l'année universitaire</th>
+                                <th scope="col" class="border-0">Fin de l'année universitaire</th>
+                                <th scope="col" class="border-0 rounded-end">État</th>
+                            </tr>
+                        </thead>
+                        <!-- Table body START -->
+                        <tbody *ngFor="let etuReservation of etudiantReservations">
+                            <!-- Table row -->
+                            <tr>
+                                <td>
+                                    <div class="d-flex align-items-center position-relative">
+                                        <!-- Image -->
+                                        <div class="avatar avatar-md">
+                                            <img src="http://localhost:8089/GestionFoyer/auth/{{etuReservation.etudiant.image}}" class="rounded-circle" alt="">
+                                        </div>
+                                        <div class="mb-0 ms-2">
+                                            <!-- Title -->
+                                            <h6 class="mb-0">{{etuReservation.etudiant.nom}} {{etuReservation.etudiant.prenom}}</h6>
+                                        </div>
+                                    </div>
+                                </td>
+                                <td>
+                                    <h6 class="table-responsive-title mt-2 mt-lg-0 mb-0">{{etuReservation.reservation.numReservation}}</h6>
+                                </td>
+                                <!-- Table data -->
+                                <td>
+                                    <div class="table-responsive-title mt-2 mt-lg-0 mb-0">{{etuReservation.reservation.debutAnneeUniv}}</div>
+                                </td>
+                                <!-- Table data -->
+                                <td>
+                                    <div class="table-responsive-title mt-2 mt-lg-0 mb-0">{{etuReservation.reservation.finAnneeUniv}}</div>
+                                </td>
+                                <!-- Table data -->
+                                <td>
+                                    <div *ngIf="etuReservation.reservation.estValide; else enAttente">
+                                        <span class="badge bg-success">Confirmer</span>
+                                    </div>
+                                    <ng-template #enAttente>
+                                        <span class="badge bg-danger">Annuler</span>
+                                    </ng-template>
+                                </td>
+                            </tr>
+                        </tbody>
+                        <!-- Table body END -->
+                    </table>
+                </div>
+                <!-- Template à afficher si aucune réservation n'est présente -->
+                <ng-template #noReservation>
+                    <div class="alert alert-info container">Aucune réservation n'est disponible pour cette année universitaire.</div>
+                </ng-template>
+            </div>
+        </div>
+    </div>
+</div>
