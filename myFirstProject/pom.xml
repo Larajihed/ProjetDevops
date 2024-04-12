@@ -104,6 +104,28 @@
 					</excludes>
 				</configuration>
 			</plugin>
+
+			<!-- OWASP Dependency-Check Plugin -->
+			<plugin>
+				<groupId>org.owasp</groupId>
+				<artifactId>dependency-check-maven</artifactId>
+				<version>6.5.1</version> <!-- Assurez-vous d'utiliser la dernière version disponible -->
+				<executions>
+					<execution>
+						<phase>verify</phase>
+						<goals>
+							<goal>check</goal>
+						</goals>
+					</execution>
+				</executions>
+				<configuration>
+					<!-- Configuration optionnelle -->
+					<failBuildOnCVSS>4</failBuildOnCVSS> <!-- Faire échouer le build pour les vulnérabilités avec un score CVSS supérieur à 4 -->
+					<outputDirectory>${project.build.directory}</outputDirectory>
+					<format>XML</format>
+					<!-- Vous pouvez également générer des rapports en HTML ou JSON -->
+				</configuration>
+			</plugin>
 		</plugins>
 	</build>
 
