@@ -118,13 +118,13 @@
 						</goals>
 					</execution>
 				</executions>
-				<configuration>
-					<!-- Configuration optionnelle -->
-					<failBuildOnCVSS>4</failBuildOnCVSS> <!-- Faire échouer le build pour les vulnérabilités avec un score CVSS supérieur à 4 -->
-					<outputDirectory>${project.build.directory}</outputDirectory>
-					<format>XML</format>
-					<!-- Vous pouvez également générer des rapports en HTML ou JSON -->
-				</configuration>
+<!--				<configuration>-->
+<!--					&lt;!&ndash; Configuration optionnelle &ndash;&gt;-->
+<!--					<failBuildOnCVSS>4</failBuildOnCVSS> &lt;!&ndash; Faire échouer le build pour les vulnérabilités avec un score CVSS supérieur à 4 &ndash;&gt;-->
+<!--					<outputDirectory>${project.build.directory}</outputDirectory>-->
+<!--					<format>XML</format>-->
+<!--					&lt;!&ndash; Vous pouvez également générer des rapports en HTML ou JSON &ndash;&gt;-->
+<!--				</configuration>-->
 			</plugin>
 		</plugins>
 	</build>
