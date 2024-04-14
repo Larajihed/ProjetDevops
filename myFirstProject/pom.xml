@@ -109,6 +109,23 @@
 			<scope>test</scope>
 		</dependency>
 
+		<!-- JUnit -->
+		<dependency>
+			<groupId>junit</groupId>
+			<artifactId>junit</artifactId>
+			<version>4.13.2</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Mockito -->
+		<dependency>
+			<groupId>org.mockito</groupId>
+			<artifactId>mockito-core</artifactId>
+			<version>3.6.0</version>
+			<scope>test</scope>
+		</dependency>
+
+		<!-- Jacoco -->
 		<dependency>
 			<groupId>org.jacoco</groupId>
 			<artifactId>jacoco-maven-plugin</artifactId>
@@ -157,7 +174,7 @@
 			<plugin>
 				<groupId>org.owasp</groupId>
 				<artifactId>dependency-check-maven</artifactId>
-				<version>6.5.1</version> <!-- Assurez-vous d'utiliser la dernière version disponible -->
+				<version>6.5.1</version>
 				<executions>
 					<execution>
 						<phase>verify</phase>
@@ -166,13 +183,13 @@
 						</goals>
 					</execution>
 				</executions>
-<!--				<configuration>-->
-<!--					&lt;!&ndash; Configuration optionnelle &ndash;&gt;-->
-<!--					<failBuildOnCVSS>4</failBuildOnCVSS> &lt;!&ndash; Faire échouer le build pour les vulnérabilités avec un score CVSS supérieur à 4 &ndash;&gt;-->
-<!--					<outputDirectory>${project.build.directory}</outputDirectory>-->
-<!--					<format>XML</format>-->
-<!--					&lt;!&ndash; Vous pouvez également générer des rapports en HTML ou JSON &ndash;&gt;-->
-<!--				</configuration>-->
+				<configuration>
+					<!-- Configuration optionnelle -->
+					<failBuildOnCVSS>11</failBuildOnCVSS> <!-- Faire échouer le build pour les vulnérabilités avec un score CVSS supérieur à 11 -->
+					<outputDirectory>${project.build.directory}</outputDirectory>
+					<format>XML</format>
+					<!-- Vous pouvez également générer des rapports en HTML ou JSON -->
+				</configuration>
 			</plugin>
 		</plugins>
 	</build>
