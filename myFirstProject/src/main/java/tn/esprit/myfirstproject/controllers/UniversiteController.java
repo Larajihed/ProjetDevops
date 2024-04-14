@@ -9,7 +9,7 @@ import tn.esprit.myfirstproject.services.IUniversiteServices;
 import java.util.List;
 
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://192.168.33.10:4200")
 @RequestMapping("/universite")
 @RequiredArgsConstructor
 public class UniversiteController {

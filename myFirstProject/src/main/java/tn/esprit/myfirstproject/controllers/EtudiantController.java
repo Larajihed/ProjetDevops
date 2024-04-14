@@ -14,7 +14,7 @@ import java.io.IOException;
 import java.util.List;
 
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://192.168.33.10:4200")
 @RequestMapping("/etudiant")
 @RequiredArgsConstructor
 public class EtudiantController {

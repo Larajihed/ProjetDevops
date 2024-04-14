@@ -9,7 +9,7 @@ import tn.esprit.myfirstproject.services.IBlocServices;
 import java.util.List;
 
 @RestController
-@CrossOrigin("*")
+@CrossOrigin(origins = "http://192.168.33.10:4200")
 @RequestMapping("/bloc")
 @RequiredArgsConstructor
 public class BlocController {
