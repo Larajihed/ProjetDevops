@@ -1,0 +1,9 @@
+{
+    "/GestionFoyer/*": {
+      "target": "http://192.168.33.10:8089",
+      "secure": false,
+      "changeOrigin": true,
+      "logLevel": "debug"
+    }
+  }
+  
