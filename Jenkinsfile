@@ -13,6 +13,29 @@ pipeline {
     
 
     stages {
+        stage('Start Services (Sonarqube&Nexus&MySQL)') {
+            steps {
+                script {
+                    // Définition des services à démarrer
+                    def services = ['sonarqube', 'nexus', 'mysql-container']
+        
+                    // Boucle sur chaque service pour vérifier et démarrer si nécessaire
+                    services.each { service ->
+                        // Vérifier si le conteneur est déjà en cours d'exécution
+                        def isRunning = sh(script: "docker ps -q --filter name=${service}", returnStdout: true).trim()
+                        
+                        // Si le conteneur n'est pas en cours d'exécution, le démarrer
+                        if (isRunning == '') {
+                            sh "docker start ${service}"
+                            echo "${service} has been started."
+                        } else {
+                            echo "${service} is already running."
+                        }
+                    }
+                }
+            }
+        }
+
         stage('Git Checkout') {
             steps {
                 git branch: 'University_Management_MondherArfaoui', credentialsId: '62b22b58-a22f-49f1-822c-f3141c635c2d', url: 'https://github.com/SpawN005/DevOps.git'
@@ -145,7 +168,70 @@ pipeline {
                 sh 'docker compose up -d'
             }
         }
-
+        
+        stage('Start Prometheus') {
+            steps {
+                script {
+                    // Vérifier si le conteneur Prometheus est déjà en cours d'exécution
+                    def isPrometheusRunning = sh(script: "docker ps -q --filter name=prometheus", returnStdout: true).trim()
+                    // Si le conteneur n'est pas en cours d'exécution, le démarrer
+                    if (isPrometheusRunning == '') {
+                        sh 'docker start prometheus'
+                    } else {
+                        echo 'Prometheus is already running.'
+                    }
+                }
+            }
+        }
+        
+        stage('Start Grafana') {
+            steps {
+                script {
+                    // Vérifier si le conteneur Grafana est déjà en cours d'exécution
+                    def isGrafanaRunning = sh(script: "docker ps -q --filter name=grafana", returnStdout: true).trim()
+                    // Si le conteneur n'est pas en cours d'exécution, le démarrer
+                    if (isGrafanaRunning == '') {
+                        sh 'docker start grafana'
+                    } else {
+                        echo 'Grafana is already running.'
+                    }
+                }
+            }
+        }
+        
+        stage('Send Email Notification') {
+            steps {
+                script {
+                    if (currentBuild.result == 'SUCCESS') {
+                        emailext (
+                            to: 'mondher.arfaoui@esprit.tn',
+                            subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                            mimeType: 'text/html', // Spécifie le type MIME comme HTML
+                            body: """<html>
+                                        <body>
+                                            <p style="color: green; font-weight: bold;">Félicitations !</p>
+                                            <p>Le build <b>${env.JOB_NAME} #${env.BUILD_NUMBER}</b> a réussi.</p>
+                                            <p>Consulter les détails ici : <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                                        </body>
+                                    </html>"""
+                        )
+                    } else {
+                        emailext (
+                            to: 'mondher.arfaoui@esprit.tn',
+                            subject: "FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
+                            mimeType: 'text/html',
+                            body: """<html>
+                                        <body>
+                                            <p style="color: red; font-weight: bold;">Alerte de Build Échoué !</p>
+                                            <p>Le build <b>${env.JOB_NAME} #${env.BUILD_NUMBER}</b> a échoué.</p>
+                                            <p>Consulter les détails et les logs ici : <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
+                                        </body>
+                                    </html>"""
+                        )
+                    }
+                }
+            }
+        }
     }
 
     
@@ -153,34 +239,6 @@ pipeline {
         always {
             echo 'Build completed'
             cleanWs()
-        }
-        success {
-            emailext (
-                to: 'mondher.arfaoui@esprit.tn',
-                subject: "SUCCESS: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                mimeType: 'text/html', // Spécifie le type MIME comme HTML
-                body: """<html>
-                            <body>
-                                <p style="color: green; font-weight: bold;">Félicitations !</p>
-                                <p>Le build <b>${env.JOB_NAME} #${env.BUILD_NUMBER}</b> a réussi.</p>
-                                <p>Consulter les détails ici : <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                            </body>
-                        </html>"""
-            )
-        }
-        failure {
-            emailext (
-                to: 'mondher.arfaoui@esprit.tn',
-                subject: "FAILURE: ${env.JOB_NAME} #${env.BUILD_NUMBER}",
-                mimeType: 'text/html',
-                body: """<html>
-                            <body>
-                                <p style="color: red; font-weight: bold;">Alerte de Build Échoué !</p>
-                                <p>Le build <b>${env.JOB_NAME} #${env.BUILD_NUMBER}</b> a échoué.</p>
-                                <p>Consulter les détails et les logs ici : <a href="${env.BUILD_URL}">${env.BUILD_URL}</a></p>
-                            </body>
-                        </html>"""
-            )
         }
     }
 }
