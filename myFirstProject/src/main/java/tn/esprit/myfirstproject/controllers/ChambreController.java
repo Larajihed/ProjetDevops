@@ -10,7 +10,7 @@ import tn.esprit.myfirstproject.services.IChambreServices;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://192.168.33.10:4200")
+@CrossOrigin("*")
 @RequestMapping("/chambre")
 @RequiredArgsConstructor
 public class ChambreController {

@@ -20,7 +20,7 @@ import java.util.HashMap;
 import java.util.UUID;
 
 @RestController
-@CrossOrigin(origins = "http://192.168.33.10:4200")
+@CrossOrigin("*")
 @RequestMapping("/auth")
 @RequiredArgsConstructor
 public class AuthenticationController {

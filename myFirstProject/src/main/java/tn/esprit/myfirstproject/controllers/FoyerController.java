@@ -9,7 +9,7 @@ import tn.esprit.myfirstproject.services.IFoyerServices;
 import java.util.List;
 
 @RestController
-@CrossOrigin(origins = "http://192.168.33.10:4200")
+@CrossOrigin("*")
 @RequestMapping("/foyer")
 @RequiredArgsConstructor
 public class FoyerController {
